@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shaxy 薛喜 - 實況主介紹 & 粉碎大作戰</title>
+    
+    <style>
+        :root {
+            --primary-color: #9147ff; /* Twitch 紫 */
+            --secondary-color: #ffd700; /* 金色 */
+            --bg-dark: #121212;
+            --bg-darker: #0a0a0a;
+            --text-light: #ffffff;
+            --text-gray: #b3b3b3;
+            --danger-color: #ff4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; user-select: none; }
+        body { 
+            font-family: 'Segoe UI', "Microsoft JhengHei", sans-serif; 
+            background-color: var(--bg-dark); 
+            color: var(--text-light); 
+            line-height: 1.6; 
+            overflow-x: hidden;
+        }
+
+        section { padding: 60px 20px; max-width: 1200px; margin: 0 auto; }
+        h2 { font-size: 2.5rem; margin-bottom: 40px; text-align: center; color: var(--secondary-color); text-transform: uppercase; letter-spacing: 2px; }
+
+        /* Hero 區塊 */
+        .hero {
+            height: 80vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://yt3.googleusercontent.com/ytc/AIdro_kV5m0SIY5fKl2u7-UVe-THsjmWMPUXTB0Ca7oFDWawKw=s900-c-k-c0x00ffffff-no-rj');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .hero h1 { font-size: 5rem; font-weight: 800; text-shadow: 2px 2px 10px rgba(0,0,0,0.8); margin-bottom: 20px; }
+        .hero p { font-size: 1.8rem; color: var(--secondary-color); font-weight: bold; }
+
+        /* 簡介 */
+        .about { text-align: center; font-size: 1.3rem; color: var(--text-gray); }
+
+        /* =========================================
+           遊戲區塊樣式 (Game Section Styles)
+           ========================================= */
+        .game-section {
+            background-color: var(--bg-darker);
+            text-align: center;
+            padding-bottom: 60px;
+        }
+
+        .game-ui-bar {
+            display: flex;
+            justify-content: space-around; /* 調整為平均分配 */
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+            padding: 15px 20px;
+            background: #1a1a1a;
+            border-radius: 15px;
+            border: 2px solid var(--primary-color);
+            gap: 10px;
+        }
+
+        .score-board, .timer-board {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        #score { color: var(--secondary-color); font-size: 2rem; }
+        #timer { color: var(--danger-color); font-size: 2rem; width: 60px; display: inline-block; text-align: center; }
+
+        .game-btn {
+            padding: 10px 30px;
+            font-size: 1.2rem;
+            background-color: var(--primary-color);
+            color: white; border: none; border-radius: 50px;
+            cursor: pointer; transition: 0.3s; font-weight: bold;
+            min-width: 140px;
+        }
+        .game-btn:hover { background-color: #b388ff; transform: scale(1.05); }
+        .game-btn.stop { background-color: var(--danger-color); }
+
+        /* 遊戲競技場 */
+        #game-arena {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+            margin: 0 auto;
+            background-color: #1f1f1f;
+            border: 4px solid #333;
+            border-radius: 20px;
+            overflow: hidden; 
+            background-image: radial-gradient(circle at center, #2a2a2a 0%, #1f1f1f 100%);
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+            cursor: crosshair; 
+        }
+
+        /* 薛喜目標物 */
+        .shaxy-target {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--secondary-color);
+            box-shadow: 0 0 15px var(--secondary-color);
+            cursor: pointer;
+            animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+        }
+        .shaxy-target img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; pointer-events: none; }
+
+        @keyframes popUp {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* 粉碎特效動畫 */
+        .shaxy-smashed {
+            pointer-events: none;
+            border-color: var(--danger-color) !important;
+            box-shadow: 0 0 30px var(--danger-color) !important;
+            animation: smashAnim 0.5s forwards ease-out !important;
+        }
+        .shaxy-smashed img {
+            filter: grayscale(100%) contrast(150%) sepia(100%) hue-rotate(-50deg) saturate(500%);
+        }
+
+        @keyframes smashAnim {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2) rotate(20deg); opacity: 0.8; }
+            100% { transform: scale(0) rotate(720deg); opacity: 0; }
+        }
+
+
+        /* 圖片畫廊 */
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .gallery-item { position: relative; overflow: hidden; border-radius: 10px; aspect-ratio: 1/1; border: 2px solid transparent; transition: 0.3s; }
+        .gallery-item:hover { border-color: var(--secondary-color); }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: 0.5s; }
+        .gallery-item:hover img { transform: scale(1.1); }
+
+        /* 影片區塊 */
+        .videos-section { background-color: var(--bg-darker); }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+        
+        .video-card {
+            display: block; position: relative; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+        }
+        .video-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(145, 71, 255, 0.4); }
+        .video-thumb { width: 100%; aspect-ratio: 16/9; object-fit: cover; opacity: 0.8; transition: opacity 0.3s; }
+        .video-card:hover .video-thumb { opacity: 1; }
+        
+        .play-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 60px; height: 60px; background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--text-light); transition: all 0.3s;
+        }
+        .play-overlay::after { content: '▶'; font-size: 24px; color: white; margin-left: 4px; }
+        .video-card:hover .play-overlay { background-color: var(--primary-color); transform: translate(-50%, -50%) scale(1.1); border-color: var(--primary-color); }
+        .video-title { position: absolute; bottom: 0; left: 0; width: 100%; padding: 15px; background: linear-gradient(transparent, black); color: white; font-weight: bold; }
+
+        /* Footer */
+        .cta-footer { background: linear-gradient(45deg, var(--bg-darker), #2c1344); text-align: center; padding: 100px 20px; }
+        .twitch-btn { display: inline-block; padding: 20px 40px; background-color: var(--primary-color); color: white; font-size: 1.5rem; font-weight: bold; text-decoration: none; border-radius: 50px; box-shadow: 0 0 20px rgba(145, 71, 255, 0.5); transition: 0.3s; }
+        .twitch-btn:hover { transform: translateY(-5px); background-color: #a970ff; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 3rem; }
+            #game-arena { height: 400px; }
+            .game-ui-bar { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <h1>SHAXY 薛喜</h1>
+        <p>「兩個字：大中計。」</p>
+    </header>
+
+    <section class="about">
+        <h2>關於薛喜</h2>
+        <p>前 ahq 職業選手，現任 Twitch 實況主。<br>綜藝受氣包，觀眾最愛看他崩潰。<br>現在，換你來讓他「大中計」了！</p>
+    </section>
+
+    <section class="game-section">
+        <h2>粉碎薛喜大作戰</h2>
+        <p style="color: var(--text-gray); margin-bottom: 20px;">(你有 10 秒鐘的時間，盡情粉碎吧！)</p>
+        
+        <div class="game-ui-bar">
+            <div class="score-board">分數: <span id="score">0</span></div>
+            <div class="timer-board">時間: <span id="timer">10</span>s</div>
+            <button id="game-control-btn" class="game-btn">開始遊戲</button>
+        </div>
+
+        <div id="game-arena">
+            <h3 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #555; pointer-events: none;">
+                準備好了嗎...
+            </h3>
+        </div>
+    </section>
+
+    <section class="gallery">
+        <h2>薛喜圖集</h2>
+        <div class="gallery-grid">
+            <div class="gallery-item"><img src="https://images.newtalk.tw/resize_action2/600/album/news/841/636238324f37c.png" alt="Photo 1"></div>
+            <div class="gallery-item"><img src="https://static-cdn.jtvnw.net/twitch-clips-thumbnails-prod/ZealousRelentlessLaptopOpieOP-GJjncIxwAxn9A7rr/75b491ab-916a-48c0-a0db-8eaece446df5/preview-480x272.jpg" alt="Photo 2"></div>
+            <div class="gallery-item"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTSu-kMkNrlldnPTVDlnCW3t53OC3T-lL0vg&s" alt="Photo 3"></div>
+            <div class="gallery-item"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTElrfIbwEcIQdEZity61ldSu7yDYH3GKKqYw&s" alt="Photo 4"></div>
+        </div>
+    </section>
+
+    <section class="videos-section">
+        <h2>精選實況精華</h2>
+        <div class="video-grid">
+            <a href="https://www.youtube.com/watch?v=P8EiM9OmST8" target="_blank" class="video-card">
+                <img src="https://img.youtube.com/vi/P8EiM9OmST8/maxresdefault.jpg" alt="Thumb" class="video-thumb">
+                <div class="play-overlay"></div>
+                <div class="video-title">薛喜大中計精華</div>
+            </a>
+            <a href="https://www.youtube.com/watch?v=afMJ3daiiFo" target="_blank" class="video-card">
+                <img src="https://img.youtube.com/vi/afMJ3daiiFo/maxresdefault.jpg" alt="Thumb" class="video-thumb">
+                <div class="play-overlay"></div>
+                <div class="video-title">薛喜與羅杰</div>
+            </a>
+            <a href="https://www.youtube.com/watch?v=nF9sPbMHFKQ" target="_blank" class="video-card">
+                <img src="https://img.youtube.com/vi/nF9sPbMHFKQ/maxresdefault.jpg" alt="Thumb" class="video-thumb">
+                <div class="play-overlay"></div>
+                <div class="video-title">無能狂怒現場</div>
+            </a>
+        </div>
+    </section>
+
+    <footer class="cta-footer">
+        <h2>還沒點夠嗎？</h2>
+        <p style="margin-bottom: 30px; color: #b3b3b3;">快去實況台看他本人表演大中計！</p>
+        <a href="https://www.twitch.tv/shaxy" target="_blank" class="twitch-btn">
+            前往 Shaxy Twitch 頻道
+        </a>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const arena = document.getElementById('game-arena');
+            const scoreDisplay = document.getElementById('score');
+            const timerDisplay = document.getElementById('timer');
+            const controlBtn = document.getElementById('game-control-btn');
+            
+            let score = 0;
+            let gameActive = false;
+            let spawnTimer; // 用於生成圖片的計時器
+            let countdownInterval; // 用於倒數秒數的計時器
+            const GAME_DURATION = 10; // 遊戲時間 (秒)
+
+            // 薛喜圖片素材
+            const shaxyImages = [
+                'https://static-cdn.jtvnw.net/jtv_user_pictures/19d96ee7-22ae-4a01-a6e0-321f60467e39-profile_image-300x300.jpg'
+            ];
+
+            // 按鈕事件
+            controlBtn.addEventListener('click', () => {
+                if (!gameActive) {
+                    startGame();
+                } else {
+                    stopGame();
+                }
+            });
+
+            function startGame() {
+                // 重置狀態
+                gameActive = true;
+                score = 0;
+                let timeLeft = GAME_DURATION;
+                
+                updateScore();
+                timerDisplay.innerText = timeLeft;
+                controlBtn.innerText = "停止遊戲";
+                controlBtn.classList.add('stop');
+                arena.innerHTML = ''; 
+                
+                // 1. 開始倒數計時
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.innerText = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        stopGame(true); // 時間到自動停止
+                    }
+                }, 1000);
+
+                // 2. 開始生成迴圈
+                spawnLoop();
+            }
+
+            // stopGame 接收一個參數 isTimeUp，用來判斷是否為時間到
+            function stopGame(isTimeUp = false) {
+                gameActive = false;
+                clearTimeout(spawnTimer);      // 停止生成
+                clearInterval(countdownInterval); // 停止倒數
+                
+                controlBtn.innerText = "再玩一次";
+                controlBtn.classList.remove('stop');
+                
+                // 清除場上所有目標
+                const remainingTargets = arena.querySelectorAll('.shaxy-target');
+                remainingTargets.forEach(t => t.remove());
+
+                // 顯示結算畫面
+                let message = isTimeUp ? "時間到！" : "遊戲中止";
+                arena.innerHTML = `
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%;">
+                        <h2 style="color: var(--secondary-color); margin-bottom: 10px;">${message}</h2>
+                        <h3 style="color: white;">最終分數: <span style="font-size: 2.5rem; color: var(--primary-color);">${score}</span></h3>
+                        <p style="color: #ccc;">(兩個字：大中計)</p>
+                    </div>
+                `;
+            }
+
+            function updateScore() {
+                scoreDisplay.innerText = score;
+            }
+
+            function spawnShaxy() {
+                if (!gameActive) return;
+
+                const target = document.createElement('div');
+                target.classList.add('shaxy-target');
+                
+                const randomImg = shaxyImages[Math.floor(Math.random() * shaxyImages.length)];
+                target.innerHTML = `<img src="${randomImg}" alt="Shaxy Target">`;
+
+                // 計算隨機位置
+                const maxX = arena.clientWidth - 100;
+                const maxY = arena.clientHeight - 100;
+                const randomX = Math.floor(Math.random() * maxX);
+                const randomY = Math.floor(Math.random() * maxY);
+
+                target.style.left = randomX + 'px';
+                target.style.top = randomY + 'px';
+
+                // 點擊事件
+                target.addEventListener('mousedown', (e) => {
+                    if (!target.classList.contains('shaxy-smashed')) {
+                        smashTarget(target);
+                        e.stopPropagation(); 
+                    }
+                });
+
+                arena.appendChild(target);
+
+                // 沒點到，一段時間後自動消失 (加快一點節奏)
+                setTimeout(() => {
+                    if (target.parentElement && !target.classList.contains('shaxy-smashed')) {
+                        target.remove();
+                    }
+                }, 1500); // 1.5秒後消失
+            }
+
+            function smashTarget(target) {
+                score += 10;
+                updateScore();
+                target.classList.add('shaxy-smashed');
+                setTimeout(() => {
+                    target.remove();
+                }, 500); 
+            }
+
+            function spawnLoop() {
+                if (!gameActive) return;
+                spawnShaxy();
+                // 隨機生成間隔，讓節奏稍微快一點 (300ms ~ 900ms)
+                const randomInterval = Math.random() * 600 + 300;
+                spawnTimer = setTimeout(spawnLoop, randomInterval);
+            }
+        });
+    </script>
+</body>
+</html>
